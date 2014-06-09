@@ -16,6 +16,8 @@ setlocale(LC_ALL,"es_ES");
             echo anchor ('template/web_template','<img src="'.base_url()."images/napal.png".'">');
             echo "hello";
             echo "hello";
+            
+            echo "hello3";
             ?>
         </div>
         <div id="menu_arriba">
