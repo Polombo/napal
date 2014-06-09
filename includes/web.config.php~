@@ -1,0 +1,7 @@
+<?php  
+//datos para la conexion a la DB
+define('DNS','localhost');  
+define('USERNAME','root');  
+define('PASSWORD','');  
+define('DATABASE','fuckside');
+?>  

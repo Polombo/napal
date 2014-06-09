@@ -1,0 +1,50 @@
+<html>
+    
+    <?php 
+    include_once("includes/cabecera.php");
+    ?>
+        
+    <body>
+        <div id="presentacion">
+            <div id="inicioArriba">
+                <div id="cabinicio">
+                    <?php
+                    echo anchor('pages/hola','<img src="images/entrar.jpeg">');
+                    ?>
+                </div>
+                <div id="cabTxt">
+                    <span class="cabQuentinBig">WELCOME TO THE HELL.....<br /></span>
+                    <span class="cabEstilo">FUCKSIDE</span>
+                </div>
+            </div>
+            
+            <div id="contentIni">
+                <div id="logoIzq" class="">
+                    <img class="imgLaterales" src="images/riskGlory.gif" />
+                </div>
+                <div class="video_content">
+                    <video controls autoplay="">
+                        <source src="videos/switchBlunt.mp4" type="video/mp4">
+                        <source src="videos/switchBlunt.ogv" type="video/ogg">
+                        Si no puedes ver el video puede que necesites actualizar el navegador.
+                    </video>
+                </div>
+                <div id="logoDer" class="">
+                    <img class="imgLaterales" src="images/riskGlory.gif" />
+                </div>
+            </div>
+            <br>
+            
+            <br>
+        </div>
+        
+        <?php 
+        $this->load->module('template');
+        $this->template->pie();
+        //$this->load->view('pie');
+        ?>
+	
+	</body>
+    
+    
+</html>

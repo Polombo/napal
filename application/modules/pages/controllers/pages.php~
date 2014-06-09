@@ -1,0 +1,140 @@
+<?php
+class Pages extends MX_Controller 
+{
+
+    function __construct() {
+        parent::__construct();
+    }
+    
+    function index(){
+        
+        $data['module'] = "pages";
+        /* Content es la pantalla principal
+         * Se le tienen que pasar las noticias y los videos que 
+         * hay en la web.Tendran que ser consultas separadas para cada parte del
+         * contenido.
+         */
+        $this->load->module('noticias');
+        //obtener ultimas 7 noticias de dos meses atras
+                
+        $query_news = $this->noticias->getLastnews();
+        $data['query_news'] = $query_news;
+        
+        $this->load->module('videos');
+        $query_videos = $this->videos->get('fecha');
+        $data['query_videos'] = $query_videos;
+        
+        $data['view_file'] = "content";
+        $data['title'] = "FUCKSIDE";
+        //$this->load->view('tasks/display',$data);
+        echo Modules::run('template/web_template',$data);
+    }
+    
+    function camisetasFuckside(){
+        
+        if(!isset($data['view_file'])){
+            $data['view_file'] = "camisetas";
+        }
+        
+        //tenemos que coger las camisetas de la base de datos
+        $this->load->module('articulos');
+        $data['query'] = $this->articulos->get_articulos();
+        
+        $data['title'] = "CAMISETAS";
+        echo Modules::run('template/web_template',$data);
+    }
+    
+    /*
+     *
+     * El modulo pages deberia de tener un get data from post de cada pantalla
+     * 
+     */
+    
+    function detalleProducto($idartacol){
+        
+        //coger el detall del id_articulo de la tabla art_ta_col
+        // llamando a su modelo y haciendo una consulta personalizada 
+        // para obtener tambien la descripcion del 
+        // articulo y el titulo y el precio
+        $this->load->module('art_ta_col');
+        $data['query'] = $this->art_ta_col->get_artTallasColor($idartacol);
+                
+        //llenamos los datos del producto en la matriz 
+        //para trabajar con el post luego
+        foreach($data['query']->result() as $producto){
+            $data['idartacol'] = $producto->idartacol;
+            $data['idarticulo'] = $producto->id_articulo;
+            $data['idproducto'] = $producto->id_producto;
+            $data['idcolor'] = $producto->idcolor;
+            $data['idtalla'] = $producto->idtalla;
+            $data['titulo'] = $producto->titulo;
+            $data['precio'] = $producto->precio;
+            $data['logo'] = $producto->logo;
+            $data['descripcion'] = $producto->descripcion;
+            $data['color'] = $producto->color;
+            $data['talla'] = $producto->talla;
+            $data['stock'] = $producto->stock;
+        }
+        
+        $data['firstime'] = TRUE;
+        
+        if(!isset($data['view_file'])){
+            $data['view_file'] = "detalleProducto";
+        }
+        $data['title'] = "DETALLE PRODUCTO";
+        echo Modules::run('template/web_template',$data);
+        
+        
+    }
+    
+    function contact(){
+        
+        if(!isset($data['view_file'])){
+            $data['view_file'] = "contact";
+        }
+        $data['title'] = "CONTACTO";
+        echo Modules::run('template/web_template',$data);
+    }
+    
+    function eventosFuckside(){
+        
+        if(!isset($data['view_file'])){
+            $data['view_file'] = "eventos";
+        }
+        
+        $data['title'] = "Eventos F*CK";
+        
+        echo Modules::run('template/web_template',$data);
+    }
+    
+    function noticias(){
+        
+        if(!isset($data['view_file'])){
+            $data['view_file'] = "noticias";
+        }
+        
+        $data['title'] = "Noticias";
+        
+        echo Modules::run('template/web_template',$data);
+    }
+    
+    function fuckside(){
+        
+        if(!isset($data['view_file'])){
+            $data['view_file'] = "aboutus";
+        }
+        
+        $data['title'] = "About US";
+        
+        echo Modules::run('template/web_template',$data);
+    }
+    
+    
+    function admin(){
+        //vamos a llamar a un modulo que sera el encargado de 
+        //gestionar las paginas del administrador.
+        echo Modules::run('administradores');
+    }
+
+
+}

@@ -1,0 +1,199 @@
+<?php
+
+/* 
+ * Clase Carro que se encargará de guardar la informacion de los articulos que 
+ * quiere el usuario.
+ * 
+ */
+
+class Carro{
+    
+    var $total_productos;
+    var $precio_total;
+    var $arr_articulos = Array();
+    //var $cantidad;
+    
+    public function __construct() {
+        //contructor de la clase;
+        //al instanciar la clase ponemos el total productos a cero.
+        $this->total_productos=0;
+        
+    }
+    
+    public function agregarArticulo(Articulo $articulo,$cantidad){
+        
+        /*
+         * Esta funcion se encarga de insertar productos en el carrito
+         * Se introduciran todos los datos del articulo en el array para
+         * posteriormente mostrarlo al usuario o mandarlo a paypal para el cobro
+         */
+        
+        $this->arr_articulos[count($this->arr_articulos)+1]= array(
+            'idarticulo'=>$articulo->getIdarticulo(),
+            'idproducto'=>$articulo->getProducto(),
+            'titulo'=>$articulo->getTitulo(),
+            'descripcion'=>$articulo->getDescripcion(),
+            'logo'=>$articulo->getLogo(),
+            'precio'=>$articulo->getPrecio(),
+            'color'=>$articulo->getColor(),
+            'talla'=>$articulo->getTalla(),
+            'stock'=>$articulo->getStock(),
+            'cantidad'=>$cantidad
+        );
+        
+        //actualizamos el total de productos del carrito
+        actualizarTotalElementos();
+    }
+    
+    public function eliminarArticulo($linea){
+        
+        //elimina un producto del array de productos
+        //se le pasa la linea a eliminar
+        $aux;
+        $pos=0;
+        for($i=0; $i< count($this->arr_articulos); $i++){
+            
+            /*
+             * Si la linea que nos llega es distinta que la iteracion del bucle
+             * pasamos los datos productos al array auxiliar para vaciar
+             * posteriormente el array productos y rellenarlo con el auxiliar
+             */
+            if($i != $linea){
+                $aux[$pos] = $this->arr_articulos[$i];
+                $pos++;
+            }
+        }
+        
+        //vaciamos el array y lo rellenamos con los valores buenos
+        unset($this->arr_articulos);
+        $this->arr_articulos = $aux;
+        
+        //actualizamos el total de productos del carrito
+        actualizarTotalElementos();
+    }
+    
+    
+    // Devolverá el total de articulos insertados en nuestro carrito
+    public function totalArticulos(){
+        
+        return $this->total_productos;
+    }
+    
+    public function totalPrecioArticulos(){
+        
+        $total = 0;
+        
+        for($i=0; $i< count($this->arr_articulos); $i++){
+            
+            $total = $total + $this->arr_articulos[$i]['precio'];
+        }
+        
+        $this->precio_total= $total;
+        return $total;
+    }
+    
+    public function obtenerArticulos(){
+        return $this->arr_articulos;
+    }
+    
+    public function actualizarTotalElementos(){
+        //actualizamos el total de productos del carrito
+        $this->total_productos = count($this->arr_articulos);
+    }
+    
+    
+    /***********************************************/
+    //ESTA FUNCION TIENE QUE IR A interfaz.php
+    public function detalleCamiseta(Articulos $camiseta){
+        
+        ?>
+        <div id="detallecamiseta">
+            <div id="imagen">
+                <img src="images/ropa_imagenes/<?=$camiseta->getLogo();?>">
+            </div>
+            <div id="datosDetalle">
+                <span><?=$camiseta->getTitulo();?></span>
+                <span><?=$camiseta->getDescripcion();?></span>
+                <span><?=$camiseta->getPrecio();?></span>
+                <span><?=$articulo->getColor()?></span>
+                <span><?=$articulo->getTalla()?></span>
+                <input type="text" name="cantidad" value="">
+                <?php 
+                //cargar combtos Tallas y colores
+                
+                $campos = Array();
+                $campos[0] =  "id_talla";
+                $campos[1] =  "talla";
+                //cargaCombo("tallas","cmbTallas",$campos,predeterminado=false);
+                
+                $campos = Array();
+                $campos[0] =  "id_color";
+                $campos[1] =  "color";
+                //cargaCombo("colores","cmbColores",$campos,predeterminado=false);
+                ?>
+                
+            </div>
+        </div>
+        <?php
+        
+    }
+    
+    
+    public function verCarro(){
+        
+        ?>
+
+        <div id="carro">
+            <form id="formdatosPedido">
+            <table>
+                <tr class="cabeceras">
+                    <th>Logo</th>
+                    <th>Titulo</th>
+                    <th>Descripcion</th>
+                    <th>Color</th>
+                    <th>Talla</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Total Articulo</th>
+                </tr>
+                <?php 
+                for($i=0; $i< count($this->arr_articulos); $i++){
+                    
+                    ?>
+                    <tr>
+                        <td>
+                            <img src="/images/ropa_imagenes/<?=$this->arr_articulos[$i]['logo'];?>">
+                        </td>
+                        <td><?=$this->arr_articulos[$i]['titulo']?></td>
+                        <td><?=$this->arr_articulos[$i]['descripcion']?></td>
+                        <td><?=$this->arr_articulos[$i]['color']?></td>
+                        <td><?=$this->arr_articulos[$i]['talla']?></td>
+                        <td><?=$this->arr_articulos[$i]['precio']?></td>
+                        <td><?=$this->arr_articulos[$i]['cantidad']?></td>
+                        <td><?=$this->arr_articulos[$i]['cantidad']* $this->arr_articulos[$i]['precio']?></td>
+                    </tr>
+                    <?php
+                    /*
+                     * Aqui tendriamos que introducir todos los hidden necesarios
+                     * para poder mandar los datos posteriormente a paypal.
+                     */
+                        
+                       
+                    
+                }
+                ?> 
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="YT9DW2RG26HN6">
+<input type="image" src="https://www.paypalobjects.com/es_ES/ES/i/btn/btn_buynowCC_LG.gif" border="0" name="submit" alt="PayPal. La forma rápida y segura de pagar en Internet.">
+<img alt="" border="0" src="https://www.paypalobjects.com/es_ES/i/scr/pixel.gif" width="1" height="1">
+</form>
+
+            </table>
+            </form>
+        </div>
+        <?php
+                
+    }
+    
+}
