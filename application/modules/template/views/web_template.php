@@ -19,7 +19,7 @@ setlocale(LC_ALL,"es_ES");
             
             echo "hello3";
             echo "hello4";
-            
+                        
             ?>
         </div>
         <div id="menu_arriba">
